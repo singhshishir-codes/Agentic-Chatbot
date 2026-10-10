@@ -47,3 +47,19 @@ class DisplayResultsStreamlit:
 
             if not has_assistant_response:
                 st.error("The graph completed without producing an assistant response.")
+
+        elif self.usecase == "AI News":
+            frequency = self.user_message
+            with st.spinner("Fetching and summarizing News ........"):
+                results = self.graph.invoke({"frequency": frequency})
+                try:
+                    news_path = results["filename"]
+                    with open(news_path, "r", encoding="utf-8") as file:
+                        markdown_content = file.read()
+
+                    st.markdown(markdown_content, unsafe_allow_html=True)
+
+                except FileNotFoundError:
+                    st.error(f"File was not generated or not found at: {news_path}")
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
